@@ -11,7 +11,7 @@
     <h1>Mine Sweeper</h1>
     <div class="end-game-modal">
         <span></span>
-        <button>play again</button>
+        <button onclick="onInit()">play again</button>
     </div>
     <div class="game-Btn-container">
         <button onclick="setDifficulty(this)">easy</button>
@@ -20,8 +20,11 @@
     </div>
     <div class="game-data-container">
         <span class="timer">0</span>
-        <button onclick="onInit()">reset</button>
+        <button class="smiley-button" onclick="onInit()">😃</button>
         <span class="flagged-mine-counter"></span>
+    </div>
+    <div class="game-features">
+        <span>lives left: <span class="life-counter"></span></span>
     </div>
     <div class="game-container">
         <table>

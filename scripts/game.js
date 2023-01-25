@@ -2,6 +2,10 @@ const MINE = '*'
 const EMPTY = ' '
 const MARKED = '!'
 
+const SMILEY = '😊'
+const SADSMILEY = '😞'
+const VICTORYSMILEY = '😎'
+
 var gBoard
 
 var gLevel = {
@@ -15,24 +19,29 @@ var gGame = {
     shownCount: 0, 
     markedCount: 0, 
     secsPassed: 0 ,
-    flagedMineCount: gLevel.mines
+    flagCount: gLevel.mines,
+    lives: 3
 }
 
 var gInterval
 var gTimer = document.querySelector('.timer') 
 
-var gFlaggedMineCounter =  document.querySelector('.flagged-mine-counter') 
+var gflagCounter =  document.querySelector('.flagged-mine-counter') 
 
 function onInit() {
     gGame.isOn = true
+    setSmileyButton()
+    setEndGameModal()
     gGame.isClicked = false
     gGame.shownCount = 0, 
     gGame.markedCount = 0, 
     gGame.secsPassed = 0 
-    gGame.flagedMineCount = gLevel.mines
+    gGame.flagCount = gLevel.mines
+    gGame.lives = 3
+    renderLifeCounter()
     clearInterval(gInterval)
     renderTimer()
-    renderFlaggedMineCounter()
+    renderflagCounter()
     gBoard = buildBoard()
     setMinesNegsCount(gBoard)
     renderBoard(gBoard)
@@ -64,15 +73,15 @@ function renderBoard(board) {
     for (var i = 0; i < board.length; i++) {
         strHTML += "<tr>"
         for (var j = 0; j < board[0].length; j++) {
-        var mine = board[i][j].isMine && board[i][j].isShown || board[i][j].isMine && !gGame.isOn ? MINE : EMPTY
+        var mine = board[i][j].isMine && board[i][j].isShown && gGame.lives === 0 || board[i][j].isMine && !gGame.isOn ? MINE : EMPTY
         var negMinecountShows = board[i][j].isShown && !gBoard[i][j].isMine ? board[i][j].minesAroundCount : EMPTY
         var mark = board[i][j].isMarked ? MARKED : EMPTY
         strHTML += `<td onClick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j});return false;">${mine}${negMinecountShows}${mark}</td>`
       }
       strHTML += "</tr>"
     }
-    var gameBoard = document.querySelector('tbody')
-    gameBoard.innerHTML = strHTML
+    var elGameBoard = document.querySelector('tbody')
+    elGameBoard.innerHTML = strHTML
     checkGameOver()
 }//creates the game DOM
 
@@ -109,10 +118,11 @@ function onCellClicked(elCell, i, j) {
     if (!gGame.isOn) return
     if (gBoard[i][j].isMarked) return
     if (gBoard[i][j].isMine) {
-        // renderBoard()
-        gGame.isOn = false
-        clearInterval(gInterval)
-        console.log('you lose')
+        gGame.lives--
+        if (gGame.lives === 0) {
+            renderLifeCounter()
+            loseGame()
+        }
     }
     var negCount = countNegs(gBoard, i, j)
     if (negCount !== 0) {
@@ -122,11 +132,20 @@ function onCellClicked(elCell, i, j) {
     } else {
         expandShown(gBoard, elCell,i, j)
     }
+    renderLifeCounter()
     // console.log(gGame)
     // expandShown(gBoard, elCell, i, j)
     // gBoard[i][j].isShown = true
     // renderBoard(gBoard)
 }// handles cell clicks
+
+function loseGame() {
+    gGame.isOn = false
+    clearInterval(gInterval)
+    // console.log('you lose')
+    setEndGameModal()
+    setSmileyButton()
+}
 
 function onCellMarked(elCell, i , j) {
     // console.log('hi')
@@ -136,14 +155,14 @@ function onCellMarked(elCell, i , j) {
     if(!gBoard[i][j].isMarked) {
         gBoard[i][j].isMarked = true
         gGame.markedCount++
-        gGame.flagedMineCount--
-        renderFlaggedMineCounter()
+        gGame.flagCount--
+        renderflagCounter()
         // console.log(gGame.markedCount)
     } else {
         gBoard[i][j].isMarked = false
         gGame.markedCount--
-        gGame.flagedMineCount++
-        renderFlaggedMineCounter()
+        gGame.flagCount++
+        renderflagCounter()
         // console.log(gGame.markedCount)
     }
     renderBoard(gBoard)
@@ -160,6 +179,8 @@ function checkGameOver() {
             clearInterval(gInterval)
             gGame.isOn = false
             console.log('you win')
+            setEndGameModal()
+            setSmileyButton()
     } else {
         return
     }
@@ -223,14 +244,33 @@ function countShownCells(board) {
 }
 
 function setEndGameModal() {
-    var endGameMpdal = document.querySelector('.end-game-modal')
+    // console.log('hi')
+    var elEndGameModal = document.querySelector('.end-game-modal')
+    var elEndGameSpan = elEndGameModal.querySelector('span')
+    // console.log(endGameModal)
     if (!gGame.isOn) {
-        endGameMpdal.getElementsByClassName.display = 'block'
+        elEndGameModal.style.display = 'block'
+        console.log(gGame.flagCount, gLevel.mines, gGame.flagCount !== gLevel.mines)
+        if (gGame.flagCount === 0) elEndGameSpan.innerText = 'you win'
+        else elEndGameSpan.innerText= 'you lose'
     }
+    else elEndGameModal.style.display = 'none'
 }
 
-function renderFlaggedMineCounter() {
-    gFlaggedMineCounter.innerText = gGame.flagedMineCount
+function renderflagCounter() {
+    gflagCounter.innerText = gGame.flagCount
+}
+
+function renderLifeCounter() {
+    var elLifeCounter = document.querySelector('.life-counter')
+    elLifeCounter.innerText = gGame.lives
+}
+
+function setSmileyButton() {
+    var elSmiletBtn = document.querySelector('.smiley-button')
+    if (gGame.isOn) elSmiletBtn.innerText = SMILEY
+    else if (gGame.flagCount === 0) elSmiletBtn.innerText = VICTORYSMILEY
+    else elSmiletBtn.innerText = SADSMILEY
 }
 
 function renderTimer() {

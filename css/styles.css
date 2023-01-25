@@ -38,6 +38,11 @@ span {
     margin-bottom: 20px;
 }
 
+.smiley-button {
+    padding: 5px;
+    font-size: large;
+}
+
 footer {
     background-color: lightblue;
     height: 200px;
@@ -52,7 +57,7 @@ footer {
     height: 100px;
     width: 200px;
     background-color: aqua;
-    margin-left: 40%;
-    margin-bottom: 500px;
+    margin-left: 10%;
+    margin-bottom: 400px;
     display: none;
 }
