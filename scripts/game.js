@@ -74,9 +74,10 @@ function renderBoard(board) {
         strHTML += "<tr>"
         for (var j = 0; j < board[0].length; j++) {
         var mine = board[i][j].isMine && board[i][j].isShown && gGame.lives === 0 || board[i][j].isMine && !gGame.isOn ? MINE : EMPTY
-        var negMinecountShows = board[i][j].isShown && !gBoard[i][j].isMine ? board[i][j].minesAroundCount : EMPTY
+        var negMinecountShows = board[i][j].isShown && !gBoard[i][j].isMine && gBoard[i][j].minesAroundCount !== 0 ? board[i][j].minesAroundCount : EMPTY
         var mark = board[i][j].isMarked ? MARKED : EMPTY
-        strHTML += `<td onClick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j});return false;">${mine}${negMinecountShows}${mark}</td>`
+        var color = board[i][j].minesAroundCount === 0 && board[i][j].isShown ? 'zero-cell' : 'non-zero-cell'
+        strHTML += `<td class="${color}" onClick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j});return false;">${mine}${negMinecountShows}${mark}</td>`
       }
       strHTML += "</tr>"
     }
@@ -119,10 +120,14 @@ function onCellClicked(elCell, i, j) {
     if (gBoard[i][j].isMarked) return
     if (gBoard[i][j].isMine) {
         gGame.lives--
+        gBoard[i][j].isShown = false
+        renderLifeCounter()
+        flashRed()
         if (gGame.lives === 0) {
             renderLifeCounter()
             loseGame()
         }
+        return
     }
     var negCount = countNegs(gBoard, i, j)
     if (negCount !== 0) {
@@ -149,7 +154,7 @@ function loseGame() {
 
 function onCellMarked(elCell, i , j) {
     // console.log('hi')
-    // console.log(elCell)
+    // console.log(gBoard[i][j])
     if (gBoard[i][j].isShown) return
     // gBoard[i][j].isMarked = !gBoard[i][j].isMarked
     if(!gBoard[i][j].isMarked) {
@@ -271,6 +276,20 @@ function setSmileyButton() {
     if (gGame.isOn) elSmiletBtn.innerText = SMILEY
     else if (gGame.flagCount === 0) elSmiletBtn.innerText = VICTORYSMILEY
     else elSmiletBtn.innerText = SADSMILEY
+}
+
+function flashRed() {
+    var elSpan = document.querySelector('.life-counter')
+    elSpan.classList.toggle('red') 
+    setTimeout(() => {elSpan.classList.toggle('red')}, 300)
+}
+
+function darkModeToggle(elBtn) {
+    var elBody = document.querySelector('body')
+    var allText = document.querySelector('*')
+    elBody.classList.toggle('dark-mode')
+    allText.classList.toggle('dark-mode-text')
+    elBtn.innerText = elBtn.innerText === 'Dark Mode' ? 'Regular Lighting' : 'Dark Mode'
 }
 
 function renderTimer() {

@@ -4,6 +4,27 @@
 
 body {
     text-align: center;
+    background-color: rgba(0, 115, 255, 0.84);
+}
+
+.red {
+    background-color: red;
+}
+
+.dark-mode {
+    background: linear-gradient(173deg, #000 76%, #FFFFFF 100%);
+}
+
+.dark-mode-text {
+    color: #FFFFFF;
+}
+
+.zero-cell {
+    background-color: #ff66;
+}
+
+.non-zero-cell {
+    background-color: grey;
 }
 
 table {
