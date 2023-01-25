@@ -9,14 +9,19 @@
 </head>
 <body onload="onInit()">
     <h1>Mine Sweeper</h1>
+    <div class="end-game-modal">
+        <span></span>
+        <button>play again</button>
+    </div>
     <div class="game-Btn-container">
-        <button>easy</button>
-        <button>medium</button>
-        <button>hard</button>
+        <button onclick="setDifficulty(this)">easy</button>
+        <button onclick="setDifficulty(this)">medium</button>
+        <button onclick="setDifficulty(this)">hard</button>
     </div>
     <div class="game-data-container">
-        <span>time</span>
-        <span>flags</span>
+        <span class="timer">0</span>
+        <button onclick="onInit()">reset</button>
+        <span class="flagged-mine-counter"></span>
     </div>
     <div class="game-container">
         <table>
