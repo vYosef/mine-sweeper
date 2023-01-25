@@ -1,0 +1,67 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    text-align: center;
+}
+
+.red {
+    background-color: red;
+}
+
+table {
+    margin: auto;
+    cursor: pointer;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid black;
+    width: 50px;
+    height: 50px;
+}
+
+span {
+    margin: 10px;
+}
+
+.game-container {
+    margin: auto;
+    margin-top: 20px;
+}
+
+.game-Btn-container {
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.game-data-container {
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.smiley-button {
+    padding: 5px;
+    font-size: large;
+}
+
+footer {
+    background-color: lightblue;
+    height: 200px;
+    margin-bottom: 0;
+    margin-top: 30%;
+    font-size: large;
+    align-items: center;
+}
+
+.end-game-modal {
+    position: absolute;
+    height: 100px;
+    width: 200px;
+    background-color: aqua;
+    margin-left: 10%;
+    margin-bottom: 400px;
+    display: none;
+}

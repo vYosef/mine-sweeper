@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Mine Sweeper</title>
+</head>
+<body onload="onInit()">
+    <h1>Mine Sweeper</h1>
+    <div class="end-game-modal">
+        <span></span>
+        <button onclick="onInit()">play again</button>
+    </div>
+    <div class="game-Btn-container">
+        <button onclick="setDifficulty(this)">easy</button>
+        <button onclick="setDifficulty(this)">medium</button>
+        <button onclick="setDifficulty(this)">hard</button>
+    </div>
+    <div class="game-data-container">
+        <span class="timer">0</span>
+        <button class="smiley-button" onclick="onInit()">😃</button>
+        <span class="flagged-mine-counter"></span>
+    </div>
+    <div class="game-features">
+        <span>lives left: <span class="life-counter"></span></span>
+    </div>
+    <div class="game-container">
+        <table>
+            <tbody class="game-table"></tbody>
+        </table>
+    </div>
+    <footer>created by Yosef Balter</footer>
+
+    <script src="scripts/game.js"></script>
+    <script src="scripts/utils.js"></script>
+</body>
+</html>
