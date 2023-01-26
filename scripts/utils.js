@@ -1,85 +1,76 @@
-// function createMat(ROWS, COLS) {
-//     var mat = []
-//     for (var i = 0; i < ROWS; i++) {
-//         var row = []
-//         for (var j = 0; j < COLS; j++) {
-//             row.push('')
-//         }
-//         mat.push(row)
-//     }
-//     return mat
-// }
+'use strict'
 
-// function getRandomIntInclusive(min, max) {
-//     min = Math.ceil(min);
-//     max = Math.floor(max);
-//     return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
-// }
+function renderBoard(board) {
+    var strHTML = ''
+    for (var i = 0; i < board.length; i++) {
+        strHTML += "<tr>"
+        for (var j = 0; j < board[0].length; j++) {
+            var mine =  board[i][j].isMine && !gGame.isOn || board[i][j].isMine && board[i][j].isShown && gGame.hintIsActive || board[i][j].isMine && board[i][j].isShown && gLevel.manualMode ? MINE : EMPTY
+            var negMinecountShows = board[i][j].isShown && !gBoard[i][j].isMine && gBoard[i][j].minesAroundCount !== 0 ? board[i][j].minesAroundCount : EMPTY
+            var mark = board[i][j].isMarked && gGame.isOn ? MARKED : EMPTY
+            var color = board[i][j].minesAroundCount === 0 && board[i][j].isShown ? 'zero-cell' : 'non-zero-cell'
+            strHTML += `<td class="${color}" onClick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j});return false;">${mine}${negMinecountShows}${mark}</td>`
+      }
+      strHTML += "</tr>"
+    }
+    var elGameBoard = document.querySelector('tbody')
+    elGameBoard.innerHTML = strHTML
+    renderHints()
+    checkGameOver()
+}//creates the game DOM
 
-// function getTime() {
-//     return new Date().toString().split(" ")[4];
-// }
+function renderHints() {
+    var elHint = document.querySelector('.hints')
+    elHint.innerText = gGame.hints
+    return
+}// renders the amount of remainnig hints to the DOM
 
-// function renderBoard1(mat, selector) {
-//     var strHTML = "<table><tbody>";
-//     for (var i = 0; i < mat.length; i++) {
-//       strHTML += "<tr>";
-//       for (var j = 0; j < mat[0].length; j++) {
-//         const cell = mat[i][j];
-//         const className = `cell cell-${i}-${j}`;
-  
-//         strHTML += `<td class="${className}">${cell}</td>`;
-//       }
-//       strHTML += "</tr>";
-//     }
-//     strHTML += "</tbody></table>";
-  
-//     const elContainer = document.querySelector(selector);
-//     elContainer.innerHTML = strHTML;
-//   }
-  
-//   // location is an object like this - { i: 2, j: 7 }
-//   function renderCell(location, value) {
-//     // Select the elCell and set the value
-//     const elCell = document.querySelector(`.cell-${location.i}-${location.j}`);
-//     elCell.innerHTML = value;
-//   }
-  
-//   function getRandomIntInclusive(min, max) {
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-//   }
-  
-//   function getRandomColor() {
-//     var letters = "0123456789ABCDEF";
-//     var color = "#";
-//     for (var i = 0; i < 6; i++) {
-//       color += letters[Math.floor(Math.random() * 14)];
-//     }
-//     return color;
-//   }
-  
-//   function getEmptyCell(board) {
-//     var emptyCellArr = [];
-//     for (var i = 0; i < board.length; i++) {
-//       for (var j = 0; j < board[0].length; j++) {
-//         if (board[i][j] === EMPTY) emptyCellArr.push({ i, j });
-//       }
-//     }
-//     if (emptyCellArr.length === 0) return
-//     var randNum = getRandomIntInclusive(0, emptyCellArr.length - 1);
-//     return emptyCellArr[randNum];
-//   }
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}// gets random number
 
-// function countNegs(board, rowIdx, colIdx) {
-//     var negCount = 0
-//     for(var i = rowIdx - 1; i < rowIdx + 1; i++) {
-//         if (i < 0 || i >= board.length) continue
-//         for(var j = colIdx - 1; j < colIdx + 1; j++) {
-//             if (j < 0 || j >= board[0].length) continue
-//             if (board[i][j].gameElement === BALL) negCount++
-//         }
-//     }
-//     return negCount
-// }
+function getRandNum(arr) {
+    var randNum = getRandomIntInclusive(0, arr.length - 1)
+    var numArr = arr.splice(randNum, 1)
+    return numArr[0]
+}// gets random color
 
+function renderTimer() {
+    gTimer.innerText = gGame.secsPassed
+}//renders the game time into the DOM
 
+function startTimer() {
+    var sec = 1;
+    gInterval = setInterval(function(){
+        gGame.secsPassed=''+sec;
+        gTimer.innerText = gGame.secsPassed
+        sec++;
+    }, 1000);
+}//runs the game timer
+
+function renderflagCounter() {
+    gflagCounter.innerText = gGame.flagCount
+}// renders the flag counter to the DOM
+
+function renderLifeCounter() {
+    var elLifeCounter = document.querySelector('.life-counter')
+    elLifeCounter.innerText = gGame.lives
+}// renders the amount of remainnig lives to the DOM
+
+function setDifficulty(elBtn) {
+    if (elBtn.innerText === 'easy') {
+        gLevel.size = 4
+        gLevel.mines = 2
+        onInit()
+    }
+    if (elBtn.innerText === 'medium') {
+        gLevel.size = 8
+        gLevel.mines = 14
+        onInit()
+    }
+    if (elBtn.innerText === 'hard') {
+        gLevel.size = 12
+        gLevel.mines = 32
+        onInit()
+    }
+}// remakes the board and restarts the game according to the chosen difficulty level

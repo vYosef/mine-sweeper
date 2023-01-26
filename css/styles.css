@@ -4,14 +4,16 @@
 
 body {
     text-align: center;
-    background-color: rgba(0, 115, 255, 0.84);
+    background: linear-gradient(154deg, #3E2AD8 29%, #6F3126 60%);
 }
 
 button {
     margin-top: 10px;
-    font-size: medium;
+    font-size: large;
+    color: #266F36;
     border-radius: 15px;
     border: 1px solid black;
+    background: linear-gradient(180deg, #0F3DC3 0%, #26266F 60%);
 }
 
 button:hover {
@@ -21,6 +23,12 @@ button:hover {
 
 .red {
     background-color: red;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.mine-placer-btn {
+    width: 200px;
 }
 
 .dark-mode {
@@ -32,24 +40,27 @@ button:hover {
 }
 
 .zero-cell {
-    background-color: #ff66;
+    background: linear-gradient(180deg, #031001 0%, #266F36 60%);
 }
 
 .non-zero-cell {
-    background-color: grey;
+    background: linear-gradient(177deg, #000 0%, #000 2%, #fff 100%);
 }
 
 table {
     margin: auto;
     cursor: pointer;
-    border: 1px solid black;
     border-collapse: collapse;
 }
 
 td {
-    border: 1px solid black;
-    width: 50px;
+    width: 40px;
     height: 50px;
+    border-radius: 10px;
+}
+
+td:hover {
+    opacity: 0.7;
 }
 
 span {
@@ -77,9 +88,10 @@ span {
 }
 
 footer {
-    background-color: darkblue;
+    background: linear-gradient(320deg, #38D82A 29%, #656F26 72%);
+    color: darkblue;
     height: 200px;
-    margin-bottom: 0;
+    margin: 0;
     margin-top: 30%;
     font-size: large;
     align-items: center;
@@ -89,13 +101,34 @@ footer {
     position: absolute;
     height: 100px;
     width: 200px;
-    background-color: aqua;
-    margin-left: 10%;
-    margin-bottom: 400px;
+    background: linear-gradient(180deg, #C6D82A 0%, #2F6F26 60%);
+    margin-left: 20%;
+    border-radius: 25px;
     display: none;
 }
 
-footer   {
-    color: rgb(67, 100, 0);
+.timer {
+    padding: 15px;
+    margin-right: 30px;
+    background: linear-gradient(180deg, #D82A31 29%, #2F6F26 60%);
+    border-radius: 15px;
+}
+
+.flagged-mine-counter {
+    padding: 15px;
+    margin-left: 30px;
+    background: linear-gradient(180deg, #D82A31 29%, #2F6F26 60%);
+    border-radius: 15px;
+}
+
+.end-game-modal, span {
     font-size: large;
+    padding-top: 10px;
+}
+.end-game-modal, button {
+    margin-top: 25px;
+}
+
+.non-clickable {
+    pointer-events: none;
 }

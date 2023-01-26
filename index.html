@@ -11,6 +11,7 @@
     <h1>Mine Sweeper</h1>
     <div class="end-game-modal">
         <span></span>
+        <br>
         <button onclick="onInit()">play again</button>
     </div>
     <div class="game-Btn-container">
@@ -25,7 +26,7 @@
     </div>
     <div class="game-features">
         <span>lives left: <span class="life-counter"></span></span>
-        <button onclick="giveHint()">hints left:
+        <button class="hint-button" onclick="giveHint(this)">hints left:
             <span class="hints"></span>
             <!-- <span class="hint"></span> -->
             <!-- <span class="hint"></span> -->
@@ -33,7 +34,8 @@
         <br>
         <button class="dark-mode-toggle" onclick="darkModeToggle(this)">Dark Mode</button>
         <br>
-        <button onclick="mineExterminator()">mine exterminator</button>
+        <button class="mine-exterminator" onclick="mineExterminator()">mine exterminator</button>
+        <button class="mine-placer-btn" onclick="placeMinesManually(this)">manual mine placement</button>
     </div>
     <div class="game-container">
         <table>
@@ -43,6 +45,8 @@
     <footer>created by Yosef Balter</footer>
 
     <script src="scripts/game.js"></script>
+    <script src="scripts/mines.js"></script>
+    <script src="scripts/elementHandlers.js"></script>
     <script src="scripts/utils.js"></script>
 </body>
 </html>
