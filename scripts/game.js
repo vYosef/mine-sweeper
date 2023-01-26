@@ -1,6 +1,8 @@
 const MINE = '*'
 const EMPTY = ' '
-const MARKED = '!'
+const MARKED = '#'
+
+const HINT = '✴️'
 
 const SMILEY = '😊'
 const SADSMILEY = '😞'
@@ -20,7 +22,9 @@ var gGame = {
     markedCount: 0, 
     secsPassed: 0 ,
     flagCount: gLevel.mines,
-    lives: 3
+    lives: 3,
+    hints: 3,
+    hintIsActive: false
 }
 
 var gInterval
@@ -36,9 +40,12 @@ function onInit() {
     gGame.shownCount = 0, 
     gGame.markedCount = 0, 
     gGame.secsPassed = 0 
+    resetMines()
     gGame.flagCount = gLevel.mines
     gGame.lives = 3
+    gGame.hints = 3
     renderLifeCounter()
+    renderHints()
     clearInterval(gInterval)
     renderTimer()
     renderflagCounter()
@@ -46,6 +53,12 @@ function onInit() {
     setMinesNegsCount(gBoard)
     renderBoard(gBoard)
 } //starts the game
+
+function resetMines() {
+    if (gLevel.size === 4) gLevel.mines = 2
+    if (gLevel.size === 8) gLevel.mines = 14
+    if (gLevel.size === 12) gLevel.mines = 32
+}
 
 function buildBoard() {
     var board = []
@@ -68,14 +81,17 @@ function buildBoard() {
 }//sets the game board
 // && board[i][j].isShown
 // && !gBoard[i][j].isMine
+// board[i][j].isMine && board[i][j].isShown && gGame.lives === 0 ||
 function renderBoard(board) {
     var strHTML = ''
     for (var i = 0; i < board.length; i++) {
         strHTML += "<tr>"
         for (var j = 0; j < board[0].length; j++) {
-        var mine = board[i][j].isMine && board[i][j].isShown && gGame.lives === 0 || board[i][j].isMine && !gGame.isOn ? MINE : EMPTY
+        var mine =  board[i][j].isMine && !gGame.isOn || board[i][j].isMine && board[i][j].isShown && gGame.hintIsActive ? MINE : EMPTY
+        // var mine = board[i][j].isMine && board[i][j].isShown ? MINE : EMPTY
+        // console.log(gGame.isOn)
         var negMinecountShows = board[i][j].isShown && !gBoard[i][j].isMine && gBoard[i][j].minesAroundCount !== 0 ? board[i][j].minesAroundCount : EMPTY
-        var mark = board[i][j].isMarked ? MARKED : EMPTY
+        var mark = board[i][j].isMarked && gGame.isOn ? MARKED : EMPTY
         var color = board[i][j].minesAroundCount === 0 && board[i][j].isShown ? 'zero-cell' : 'non-zero-cell'
         strHTML += `<td class="${color}" onClick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j});return false;">${mine}${negMinecountShows}${mark}</td>`
       }
@@ -83,6 +99,7 @@ function renderBoard(board) {
     }
     var elGameBoard = document.querySelector('tbody')
     elGameBoard.innerHTML = strHTML
+    renderHints()
     checkGameOver()
 }//creates the game DOM
 
@@ -116,6 +133,21 @@ function onCellClicked(elCell, i, j) {
         // console.log(gGame.isClicked)
         gGame.isClicked = true
     }
+    if (gGame.hintIsActive) {
+        // console.log(gGame.hints)
+        // gBoard[i][j].isShown = true
+        expandShown(gBoard, elCell, i, j, true)
+        renderBoard(gBoard)
+        setTimeout(() => {
+            expandShown(gBoard, elCell, i, j, false)
+            // gBoard[i][j].isShown = false
+            renderBoard(gBoard)
+        }, 1000);
+        gGame.hintIsActive = false
+        renderHints(gGame.hints)
+        // console.log(gGame.hintIsActive)
+        return
+    }
     if (!gGame.isOn) return
     if (gBoard[i][j].isMarked) return
     if (gBoard[i][j].isMine) {
@@ -124,6 +156,7 @@ function onCellClicked(elCell, i, j) {
         renderLifeCounter()
         flashRed()
         if (gGame.lives === 0) {
+            gGame.isOn = false
             renderLifeCounter()
             loseGame()
         }
@@ -135,7 +168,7 @@ function onCellClicked(elCell, i, j) {
         gGame.shownCount++
         renderBoard(gBoard)
     } else {
-        expandShown(gBoard, elCell,i, j)
+        expandShown(gBoard, elCell,i, j, true)
     }
     renderLifeCounter()
     // console.log(gGame)
@@ -150,6 +183,7 @@ function loseGame() {
     // console.log('you lose')
     setEndGameModal()
     setSmileyButton()
+    renderBoard(gBoard)
 }
 
 function onCellMarked(elCell, i , j) {
@@ -183,7 +217,7 @@ function checkGameOver() {
         && gGame.shownCount === (gBoard.length ** 2 - gLevel.mines)) {
             clearInterval(gInterval)
             gGame.isOn = false
-            console.log('you win')
+            // console.log('you win')
             setEndGameModal()
             setSmileyButton()
     } else {
@@ -191,12 +225,16 @@ function checkGameOver() {
     }
 } //Game ends when all mines are marked, and all the other cells are shown
 
-function expandShown(board, elCell, i, j) {
+function expandShown(board, elCell, i, j , isShowCells) {
+    var toggleCells = isShowCells ? true : false
     for(var k = i - 1; k <= i + 1; k++) {
         if (k < 0 || k >= board.length) continue
         for(var l = j - 1; l <= j + 1; l++) {
             if (l < 0 || l >= board[0].length) continue
-            board[k][l].isShown = true
+            if (gBoard[k][l].isMarked) onCellMarked(elCell, k, l)
+            board[k][l].isShown = toggleCells
+            if (gBoard[k][l].isShown && toggleCells === false) gBoard[k][l].isShown = true
+            // board[k][l].isShown = true
             countShownCells(board)
         }
     }
@@ -255,7 +293,7 @@ function setEndGameModal() {
     // console.log(endGameModal)
     if (!gGame.isOn) {
         elEndGameModal.style.display = 'block'
-        console.log(gGame.flagCount, gLevel.mines, gGame.flagCount !== gLevel.mines)
+        // console.log(gGame.flagCount, gLevel.mines, gGame.flagCount !== gLevel.mines)
         if (gGame.flagCount === 0) elEndGameSpan.innerText = 'you win'
         else elEndGameSpan.innerText= 'you lose'
     }
@@ -290,6 +328,38 @@ function darkModeToggle(elBtn) {
     elBody.classList.toggle('dark-mode')
     allText.classList.toggle('dark-mode-text')
     elBtn.innerText = elBtn.innerText === 'Dark Mode' ? 'Regular Lighting' : 'Dark Mode'
+}
+
+function renderHints() {
+    var elHint = document.querySelector('.hints')
+    elHint.innerText = gGame.hints
+    return
+}
+
+function mineExterminator() {
+    if (gLevel.mines < 3) return
+    if (!gGame.isClicked) return
+    gLevel.mines -= 3
+    gGame.flagCount = gLevel.mines
+    var removedMineCount = 0
+    while(removedMineCount < 3) {
+        randI = getRandomIntInclusive(0, gBoard.length - 1)
+        randJ = getRandomIntInclusive(0, gBoard[0].length - 1)
+        if (gBoard[randI][randJ].isMine) gBoard[randI][randJ].isMine = false
+        else continue
+        removedMineCount++
+    }
+    renderflagCounter()
+    setMinesNegsCount(gBoard)
+    renderBoard(gBoard)
+}
+
+function giveHint() {
+    if (gGame.hints === 0) return
+    gGame.hints--
+    renderHints()
+    gGame.hintIsActive = true
+    // hintIsActive = false
 }
 
 function renderTimer() {

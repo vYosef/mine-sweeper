@@ -7,6 +7,18 @@ body {
     background-color: rgba(0, 115, 255, 0.84);
 }
 
+button {
+    margin-top: 10px;
+    font-size: medium;
+    border-radius: 15px;
+    border: 1px solid black;
+}
+
+button:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
 .red {
     background-color: red;
 }
@@ -65,7 +77,7 @@ span {
 }
 
 footer {
-    background-color: lightblue;
+    background-color: darkblue;
     height: 200px;
     margin-bottom: 0;
     margin-top: 30%;
@@ -81,4 +93,9 @@ footer {
     margin-left: 10%;
     margin-bottom: 400px;
     display: none;
+}
+
+footer   {
+    color: rgb(67, 100, 0);
+    font-size: large;
 }
