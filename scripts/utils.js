@@ -74,3 +74,17 @@ function setDifficulty(elBtn) {
         onInit()
     }
 }// remakes the board and restarts the game according to the chosen difficulty level
+
+function renderSafeSpan() {
+    var elSafeSpan = document.querySelector('.safe-click-count')
+    elSafeSpan.innerText = gLevel.safeClicks
+}// renders the amount of safe clicks remainning
+
+function renderScore() {
+    var elScoreCounter = document.querySelector('.score-container')
+    if (gLevel.size === 4) elScoreCounter.innerText = localStorage.easyScore
+    if (gLevel.size === 8) elScoreCounter.innerText = localStorage.mediumScore
+    if (gLevel.size === 12) elScoreCounter.innerText = localStorage.hardScore
+    if (elScoreCounter.innerText === 'Infinity') elScoreCounter.innerText = '0'
+}// renders the score to the DOM
+

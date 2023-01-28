@@ -19,6 +19,7 @@
         <button onclick="setDifficulty(this)">medium</button>
         <button onclick="setDifficulty(this)">hard</button>
     </div>
+    <div><span>best score:<span class="score-container"></span></div>
     <div class="game-data-container">
         <span class="timer">0</span>
         <button class="smiley-button" onclick="onInit()">😃</button>
@@ -28,14 +29,15 @@
         <span>lives left: <span class="life-counter"></span></span>
         <button class="hint-button" onclick="giveHint(this)">hints left:
             <span class="hints"></span>
-            <!-- <span class="hint"></span> -->
-            <!-- <span class="hint"></span> -->
         </button>
         <br>
         <button class="dark-mode-toggle" onclick="darkModeToggle(this)">Dark Mode</button>
         <br>
         <button class="mine-exterminator" onclick="mineExterminator()">mine exterminator</button>
         <button class="mine-placer-btn" onclick="placeMinesManually(this)">manual mine placement</button>
+        <br>
+        <button onclick="setSafeClick(this)">safe clicks:<span class="safe-click-count"></span><span class="safe-click-alert"></span></button>
+        <button onclick="megaHint(this)">mega hint</button>
     </div>
     <div class="game-container">
         <table>

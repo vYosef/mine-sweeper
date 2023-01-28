@@ -34,3 +34,16 @@ function flashRed() {
     elSpan.classList.toggle('red') 
     setTimeout(() => {elSpan.classList.toggle('red')}, 300)
 }// indicates the player stepped on a mine
+
+function setSafeClick(elBtn) {
+    if (gLevel.safeClicks < 1) return
+    if (!gGame.isClicked) {
+        var safeSpan = elBtn.querySelector('.safe-click-alert')
+        safeSpan.innerText = 'press a cell first'
+        setTimeout(() => {
+            safeSpan.innerText = ''
+        }, 1000)
+        return
+    }
+    gLevel.safeClickIsOn = true
+}//sets the safeClick variable
